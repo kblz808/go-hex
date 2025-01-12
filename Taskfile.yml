@@ -1,0 +1,16 @@
+version: "3"
+
+vars:
+  DSN: "{{.DB_CONNECTION}}//{{.DB_USER}}:{{.DB_PASSWORD}}@{{.DB_HOST}}:{{.DB_PORT}}"
+
+dotenv:
+  - ".env"
+
+tasks:
+  install:
+    cmd:
+      - go mod tidy
+  service:up:
+    cmd: docker-compose up
+  service:down:
+    cmd: docker-compose down
