@@ -2,6 +2,8 @@ package main
 
 import (
 	"context"
+	"fmt"
+	"go-hex/internal/adapter/auth/paseto"
 	"go-hex/internal/adapter/config"
 	"go-hex/internal/adapter/handler/http"
 	"go-hex/internal/adapter/storage/postgres"
@@ -9,8 +11,6 @@ import (
 	"go-hex/internal/core/service"
 	"log/slog"
 	"os"
-
-	"github.com/docker/docker/volume/service"
 )
 
 func main() {
@@ -41,9 +41,30 @@ func main() {
 
 	slog.Info("Successfully migrated the database")
 
+	token, err := paseto.New(config.Token)
+	if err != nil {
+		slog.Error("Error initializing token service", "error", err)
+		os.Exit(1)
+	}
+
 	userRepo := repository.NewUserRepository(db)
 	userService := service.NewUserService(userRepo)
 	userHandler := http.NewUserHandler(userService)
 
-	// router, err := http.NewRoute
+	authService := service.NewAuthService(userRepo, token)
+	authHandler := http.NewAuthHandler(authService)
+
+	router, err := http.NewRouter(config.HTTP, token, *userHandler, *authHandler)
+	if err != nil {
+		slog.Error("Error initializing router", "error", err)
+		os.Exit(1)
+	}
+
+	listenAddr := fmt.Sprintf("%s:%s", config.HTTP.URL, config.HTTP.Port)
+	slog.Info("Starting the http server", "listen_address", listenAddr)
+	err = router.Serve(listenAddr)
+	if err != nil {
+		slog.Error("Error starting http server", "error", err)
+		os.Exit(1)
+	}
 }

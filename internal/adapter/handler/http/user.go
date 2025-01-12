@@ -2,7 +2,7 @@ package http
 
 import (
 	"go-hex/internal/core/domain"
-	"go-hex/internal/port"
+	"go-hex/internal/core/port"
 	"net/http"
 
 	"github.com/gin-gonic/gin"

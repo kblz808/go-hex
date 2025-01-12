@@ -8,9 +8,8 @@ dotenv:
 
 tasks:
   install:
-    cmd:
-      - go mod tidy
+    cmd: go mod tidy
   service:up:
-    cmd: docker-compose up
+    cmd: sudo docker-compose up --build
   service:down:
-    cmd: docker-compose down
+    cmd: sudo docker-compose down

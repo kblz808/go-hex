@@ -2,13 +2,12 @@ package http
 
 import (
 	"go-hex/internal/adapter/config"
+	"go-hex/internal/core/port"
 	"log/slog"
 	"strings"
 
 	"github.com/gin-contrib/cors"
 	"github.com/gin-gonic/gin"
-	"github.com/gin-gonic/gin/binding"
-	"github.com/go-playground/validator/v10"
 	sloggin "github.com/samber/slog-gin"
 )
 
@@ -16,7 +15,7 @@ type Router struct {
 	*gin.Engine
 }
 
-func NewRouter(config *config.HTTP, userHandler UserHandler, authHandler AuthHandler) (*Router, error) {
+func NewRouter(config *config.HTTP, token port.TokenService, userHandler UserHandler, authHandler AuthHandler) (*Router, error) {
 	if config.Env == "production" {
 		gin.SetMode(gin.ReleaseMode)
 	}
@@ -41,9 +40,13 @@ func NewRouter(config *config.HTTP, userHandler UserHandler, authHandler AuthHan
 		user := v1.Group("/users")
 		{
 			user.POST("/", userHandler.Register)
-			user.POST("/login", authHandler.)
+			user.POST("/login", authHandler.Login)
 		}
 	}
 
 	return nil, nil
+}
+
+func (r *Router) Serve(listenAddr string) error {
+	return r.Run(listenAddr)
 }

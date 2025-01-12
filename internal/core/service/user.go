@@ -3,8 +3,8 @@ package service
 import (
 	"context"
 	"go-hex/internal/core/domain"
+	"go-hex/internal/core/port"
 	"go-hex/internal/core/util"
-	"go-hex/internal/port"
 )
 
 type UserService struct {

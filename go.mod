@@ -16,7 +16,10 @@ require (
 	golang.org/x/crypto v0.32.0
 )
 
+require aidanwoods.dev/go-result v0.1.0 // indirect
+
 require (
+	aidanwoods.dev/go-paseto v1.5.3
 	github.com/Microsoft/go-winio v0.6.2 // indirect
 	github.com/bytedance/sonic v1.12.7 // indirect
 	github.com/bytedance/sonic/loader v0.2.2 // indirect
